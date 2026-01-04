@@ -1,1 +1,8 @@
-spring.application.name=spring-batch-ex
+spring:
+  datasource:
+    url: jdbc:mariadb://localhost:3308/springai
+    username: root
+    password: root1234
+  batch:
+    jdbc:
+      initialize-schema: always
