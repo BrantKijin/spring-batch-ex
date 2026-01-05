@@ -1,8 +1,13 @@
 package com.example.springbatchex;
 
+import java.util.Date;
+import java.util.Map;
+import java.util.Objects;
+
 import javax.annotation.Nullable;
 
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -17,14 +22,12 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Configuration
-public class JobConfiguration {
-
+public class JobParameterConfiguration {
 	private final JobBuilderFactory jobBuilderFactory;
 	private final StepBuilderFactory stepBuilderFactory;
 
-
 	@Bean
-	public Job job(){
+	public Job BatchJob() {
 		return this.jobBuilderFactory.get("job")
 			.start(step1())
 			.next(step2())
@@ -32,7 +35,7 @@ public class JobConfiguration {
 	}
 
 	@Bean
-	public Step step1(){
+	public Step step1() {
 		return stepBuilderFactory.get("step1")
 			.tasklet(new Tasklet() {
 				@Nullable
@@ -40,13 +43,30 @@ public class JobConfiguration {
 				public RepeatStatus execute(StepContribution stepContribution, ChunkContext chunkContext) throws
 					Exception {
 
-					System.out.println("step1 has executed");
+					JobParameters jobParameters = stepContribution.getStepExecution().getJobParameters();
+					String name = jobParameters.getString("name");
+					Long seq = jobParameters.getLong("seq");
+					;
+					Date date = jobParameters.getDate("date");
+
+					System.out.println("===========================");
+					System.out.println("name:" + name);
+					System.out.println("seq: " + seq);
+					System.out.println("date: " + date);
+					System.out.println("===========================");
+
+					Map<String, Object> jobParameters2 = chunkContext.getStepContext().getJobParameters();
+					String name2 = (String)jobParameters2.get("name");
+					long seq2 = (long)jobParameters2.get("seq");
+
+					System.out.println("setp1 has executed");
 					return RepeatStatus.FINISHED;
 				}
 			}).build();
 	}
+
 	@Bean
-	public Step step2(){
+	public Step step2() {
 		return stepBuilderFactory.get("step2")
 			.tasklet(new Tasklet() {
 				@Nullable
@@ -54,7 +74,7 @@ public class JobConfiguration {
 				public RepeatStatus execute(StepContribution stepContribution, ChunkContext chunkContext) throws
 					Exception {
 
-					System.out.println("step2 has executed");
+					System.out.println("step1 has executed");
 					return RepeatStatus.FINISHED;
 				}
 			}).build();
