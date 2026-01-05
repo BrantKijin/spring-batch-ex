@@ -1,5 +1,7 @@
 package com.example.springbatchex;
 
+import javax.annotation.Nullable;
+
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.StepContribution;
@@ -10,56 +12,51 @@ import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.lang.Nullable;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Configuration
-public class HelloJobConfiguration {
+public class JobConfiguration {
+
 	private final JobBuilderFactory jobBuilderFactory;
 	private final StepBuilderFactory stepBuilderFactory;
 
+
 	@Bean
-	public Job helloJob() {
-		return this.jobBuilderFactory.get("helloJob")
-			.start(helloStep1())
-			.next(helloStep2())
+	public Job job(){
+		return this.jobBuilderFactory.get("job")
+			.start(step1())
+			.next(step2())
 			.build();
 	}
 
 	@Bean
-	public Step helloStep1() {
-		return stepBuilderFactory.get("helloStep1")
+	public Step step1(){
+		return stepBuilderFactory.get("step1")
 			.tasklet(new Tasklet() {
 				@Nullable
 				@Override
 				public RepeatStatus execute(StepContribution stepContribution, ChunkContext chunkContext) throws
 					Exception {
-					System.out.println(" ============================");
-					System.out.println(" >> Hello Spring Batch");
-					System.out.println(" ============================");
-					return RepeatStatus.FINISHED;
 
+					System.out.println("step1 has executed");
+					return RepeatStatus.FINISHED;
 				}
 			}).build();
 	}
-
 	@Bean
-	public Step helloStep2() {
-		return stepBuilderFactory.get("helloStep2")
+	public Step step2(){
+		return stepBuilderFactory.get("step2")
 			.tasklet(new Tasklet() {
 				@Nullable
 				@Override
 				public RepeatStatus execute(StepContribution stepContribution, ChunkContext chunkContext) throws
 					Exception {
-					System.out.println(" ============================");
-					System.out.println(" >> Step2 Spring Batch");
-					System.out.println(" ============================");
-					return RepeatStatus.FINISHED;
 
+					System.out.println("step2 has executed");
+					return RepeatStatus.FINISHED;
 				}
 			}).build();
 	}
-
 }
