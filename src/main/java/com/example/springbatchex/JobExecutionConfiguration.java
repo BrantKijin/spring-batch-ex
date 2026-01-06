@@ -3,6 +3,7 @@ package com.example.springbatchex;
 import javax.annotation.Nullable;
 
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -17,22 +18,21 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Configuration
-public class JobConfiguration {
+public class JobExecutionConfiguration {
 
 	private final JobBuilderFactory jobBuilderFactory;
 	private final StepBuilderFactory stepBuilderFactory;
 
-
 	@Bean
-	public Job job(){
-		return this.jobBuilderFactory.get("job")
+	public Job BatchJob() {
+		return this.jobBuilderFactory.get("Job")
 			.start(step1())
 			.next(step2())
 			.build();
 	}
 
 	@Bean
-	public Step step1(){
+	public Step step1() {
 		return stepBuilderFactory.get("step1")
 			.tasklet(new Tasklet() {
 				@Nullable
@@ -40,23 +40,23 @@ public class JobConfiguration {
 				public RepeatStatus execute(StepContribution stepContribution, ChunkContext chunkContext) throws
 					Exception {
 
-					System.out.println("step1 has executed");
-					return RepeatStatus.FINISHED;
-				}
-			}).build();
-	}
-	@Bean
-	public Step step2(){
-		return stepBuilderFactory.get("step2")
-			.tasklet(new Tasklet() {
-				@Nullable
-				@Override
-				public RepeatStatus execute(StepContribution stepContribution, ChunkContext chunkContext) throws
-					Exception {
+					JobExecution jobExecution = stepContribution.getStepExecution().getJobExecution();
+					System.out.println("jobExecution =" + jobExecution);
 
-					System.out.println("step2 has executed");
+					System.out.println("step1 has executed");
+
 					return RepeatStatus.FINISHED;
 				}
+			})
+			.build();
+	}
+
+	@Bean
+	public Step step2() {
+		return stepBuilderFactory.get("step2")
+			.tasklet((stepContribution, chunkContext) -> {
+				System.out.println("step2 has executed");
+				return RepeatStatus.FINISHED;
 			}).build();
 	}
 }
