@@ -4,5 +4,7 @@ spring:
     username: root
     password: root1234
   batch:
+    job:
+      names: ${job.name:NONE}
     jdbc:
       initialize-schema: always
