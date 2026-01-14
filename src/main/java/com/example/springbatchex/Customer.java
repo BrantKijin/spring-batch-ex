@@ -1,14 +1,16 @@
 package com.example.springbatchex;
 
+import java.util.Date;
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
+@AllArgsConstructor
 public class Customer {
 
-	private long id;
-	private String name;
-	private String age;
-
+	private final long id;
+	private final String firstname;
+	private final String lastname;
+	private final Date birthdate;
 }
