@@ -4,15 +4,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.lang.Nullable;
 
 public class CustomerRowMapper implements RowMapper<Customer> {
-
+	@Nullable
 	@Override
-	public Customer mapRow(ResultSet rs, int rowNum) throws SQLException {
-		return new Customer(
-			rs.getLong("id"),
-			rs.getString("firstname"),
-			rs.getString("lastname"),
-			rs.getDate("birthdate"));
+	public Customer mapRow(ResultSet resultSet, int i) throws SQLException {
+		return new Customer(resultSet.getLong("id"),
+			resultSet.getString("firstName"),
+			resultSet.getString("lastName"),
+			resultSet.getString("birthdate"));
+
 	}
 }
